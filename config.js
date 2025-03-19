@@ -22,5 +22,12 @@ export const CONFIG = {
     enabled: true,
     maxHours: 12, // Maximum hours of offline progress to calculate
     efficiencyRate: 0.8 // Offline auto-fishing efficiency (80% of normal rate)
+  },
+  // Social features settings
+  social: {
+    enabled: true,
+    chatHistoryLength: 50, // Maximum number of chat messages to keep
+    playerTrackingInterval: 5000, // How often to update player status (ms)
+    fishNotifications: true // Whether to show other players' rare fish catches
   }
 };

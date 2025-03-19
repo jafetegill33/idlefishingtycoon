@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
     <script type="importmap">
     {
       "imports": {
@@ -159,6 +160,12 @@
             <div class="currency">
                 <span class="currency-icon">💰</span>
                 <span>${{ formatNumber(money) }}</span>
+            </div>
+            <div class="social-controls" v-if="CONFIG.social.enabled">
+                <button class="social-button" @click="toggleSocialPanel">
+                    <i class="material-icons">forum</i>
+                    <span class="badge" v-if="unreadMessages > 0">{{ unreadMessages }}</span>
+                </button>
             </div>
         </header>
         
@@ -344,7 +351,7 @@
                                     <svg width="30" height="15" viewBox="0 0 30 15">
                                         <path d="M 5,7.5 Q 10,0 20,7.5 Q 10,15 5,7.5 Z" :fill="getFishColor(type)" />
                                         <circle cx="22" cy="7.5" r="1.5" fill="black" />
-                                        <path d="M 5,7.5 L 0,10 L 3,7.5 L 0,5 Z" :fill="getFishColor(type)" />
+                                        <path d="M 5,7.5 L 0,10 L 4,7.5 L 0,5 Z" :fill="getFishColor(type)" />
                                     </svg>
                                 </div>
                                 <span>{{ type }}: <strong>{{ count }}</strong></span>
@@ -393,7 +400,7 @@
                                             'active': part.current === option.id,
                                             'locked': !option.unlocked
                                         }"
-                                        @click="option.unlocked ? upgradeBoatPart(partType, option.id) : money >= option.price ? upgradeBoatPart(partType, option.id) : null"
+                                        @click="option.unlocked ? upgradeBoatPart(partType, option.id) : upgradeBoatPart(partType, option.id)"
                                     >
                                         {{ option.name }}
                                         <div v-if="!option.unlocked">
@@ -542,6 +549,90 @@
         </footer>
     </div>
     
+    <div class="social-panel" v-if="CONFIG.social.enabled" :class="{ 'active': showSocialPanel }">
+        <div class="social-panel-header">
+            <h3>Social Hub</h3>
+            <button class="panel-close" @click="toggleSocialPanel">×</button>
+        </div>
+        
+        <div class="social-panel-tabs">
+            <div class="social-tab active">Chat</div>
+            <div class="social-tab">Players ({{ onlinePlayers.length }})</div>
+        </div>
+        
+        <div class="social-panel-content">
+            <!-- Chat Area -->
+            <div class="chat-area">
+                <div class="chat-messages">
+                    <div v-for="(msg, index) in chatMessages" :key="index" class="chat-message">
+                        <span class="chat-player">{{ msg.player }}:</span>
+                        <span class="chat-text">{{ msg.text }}</span>
+                    </div>
+                    <div v-if="chatMessages.length === 0" class="chat-empty">
+                        No messages yet. Say hello!
+                    </div>
+                </div>
+                <div class="chat-input">
+                    <input 
+                        type="text" 
+                        v-model="currentChatMessage" 
+                        placeholder="Type your message..." 
+                        @keyup.enter="sendChatMessage"
+                        :disabled="!isLoggedIn"
+                    />
+                    <button @click="sendChatMessage" :disabled="!isLoggedIn">Send</button>
+                </div>
+            </div>
+            
+            <!-- Online Players -->
+            <div class="players-area" style="display: none;">
+                <div v-for="player in onlinePlayers" :key="player.id" class="player-card">
+                    <div class="player-name">{{ player.name }}</div>
+                    <div class="player-stats">
+                        <div>Location: {{ player.location }}</div>
+                        <div>Level: {{ player.level }}</div>
+                        <div>Fish: {{ player.fishDiscovered }}</div>
+                    </div>
+                </div>
+                <div v-if="onlinePlayers.length === 0" class="players-empty">
+                    No other players online right now.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Player Name Input Modal -->
+    <div class="modal-overlay" v-if="showNameInput && CONFIG.social.enabled">
+        <div class="modal-content name-modal">
+            <div class="modal-header">
+                <h2>Enter Your Name</h2>
+            </div>
+            <div class="modal-body name-input-container">
+                <p>Enter your display name to chat with other players:</p>
+                <input 
+                    type="text" 
+                    v-model="playerName" 
+                    placeholder="Your name" 
+                    class="name-input"
+                    maxlength="20"
+                    @keyup.enter="setPlayerName(playerName)"
+                />
+                <button class="name-submit" @click="setPlayerName(playerName)">Start Fishing</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fish Notifications -->
+    <div class="fish-notifications" v-if="CONFIG.social.enabled">
+        <div v-for="notification in fishNotifications" :key="notification.id" class="fish-notification" :class="notification.rarity.toLowerCase()">
+            <div class="notification-icon">🎣</div>
+            <div class="notification-content">
+                <div class="notification-title">{{ notification.player }} caught a {{ notification.rarity }}!</div>
+                <div class="notification-details">{{ notification.fish }}</div>
+            </div>
+        </div>
+    </div>
+
     <script type="module" src="app.js"></script>
 </body>
 </html>

@@ -1296,6 +1296,315 @@ h2 {
     }
 }
 
+.social-controls {
+    margin-left: 15px;
+}
+
+.social-button {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s;
+}
+
+.social-button:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.social-button .badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: #f44336;
+    color: white;
+    font-size: 12px;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.social-panel {
+    position: fixed;
+    top: 80px;
+    right: -350px;
+    width: 350px;
+    height: 500px;
+    background-color: white;
+    border-radius: 12px 0 0 12px;
+    box-shadow: -3px 0 15px rgba(0,0,0,0.1);
+    z-index: 900;
+    transition: right 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.social-panel.active {
+    right: 0;
+}
+
+.social-panel-header {
+    padding: 15px;
+    background: linear-gradient(135deg, #1976d2, #0d47a1);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.panel-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.social-panel-tabs {
+    display: flex;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.social-tab {
+    padding: 12px 20px;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s;
+}
+
+.social-tab.active {
+    color: #1976d2;
+    border-color: #1976d2;
+    font-weight: 500;
+}
+
+.social-panel-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.chat-area {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.chat-message {
+    padding: 8px 12px;
+    background-color: #f5f5f5;
+    border-radius: 12px;
+    max-width: 90%;
+    margin-bottom: 5px;
+    word-break: break-word;
+}
+
+.chat-player {
+    font-weight: bold;
+    color: #1976d2;
+    margin-right: 5px;
+}
+
+.chat-input {
+    padding: 10px;
+    display: flex;
+    border-top: 1px solid #e0e0e0;
+}
+
+.chat-input input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #e0e0e0;
+    border-radius: 20px;
+    margin-right: 10px;
+    font-size: 14px;
+}
+
+.chat-input button {
+    background-color: #1976d2;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 0 15px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.chat-input button:hover:not(:disabled) {
+    background-color: #1565c0;
+}
+
+.chat-input button:disabled {
+    background-color: #bdbdbd;
+    cursor: not-allowed;
+}
+
+.players-area {
+    padding: 15px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.player-card {
+    padding: 12px;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    transition: all 0.2s;
+}
+
+.player-card:hover {
+    background-color: #e3f2fd;
+    transform: translateY(-2px);
+}
+
+.player-name {
+    font-weight: bold;
+    color: #1976d2;
+}
+
+.player-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 0.9rem;
+    color: #757575;
+}
+
+.chat-empty, .players-empty {
+    text-align: center;
+    color: #9e9e9e;
+    padding: 20px;
+    font-style: italic;
+}
+
+.name-input-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+    padding: 20px;
+}
+
+.name-input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #1976d2;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+.name-submit {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 50px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.name-submit:hover {
+    background-color: #388e3c;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.name-modal {
+    max-width: 400px;
+}
+
+.fish-notifications {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 800;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+}
+
+.fish-notification {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    padding: 10px 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    animation: notification-slide 0.3s ease, notification-fade 5s ease forwards;
+    max-width: 300px;
+}
+
+.fish-notification.rare {
+    border-left: 4px solid #FFD700;
+}
+
+.fish-notification.epic {
+    border-left: 4px solid #9932CC;
+}
+
+.fish-notification.legendary {
+    border-left: 4px solid #FF4500;
+}
+
+.notification-icon {
+    font-size: 24px;
+}
+
+.notification-content {
+    flex: 1;
+}
+
+.notification-title {
+    font-weight: bold;
+    margin-bottom: 2px;
+}
+
+.notification-details {
+    font-size: 0.9rem;
+    color: #757575;
+}
+
+@keyframes notification-slide {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes notification-fade {
+    0%, 80% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
 @media (max-width: 900px) {
     .game-container {
         grid-template-columns: 1fr;
@@ -1395,6 +1704,26 @@ h2 {
     
     .inventory-item button {
         width: 100%;
+    }
+}
+
+@media (max-width: 600px) {
+    .social-panel {
+        width: 100%;
+        right: -100%;
+        top: 60px;
+        height: calc(100vh - 60px);
+        border-radius: 0;
+    }
+    
+    .fish-notifications {
+        bottom: 10px;
+        right: 10px;
+        left: 10px;
+    }
+    
+    .fish-notification {
+        max-width: 100%;
     }
 }
 

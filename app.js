@@ -2,6 +2,21 @@ import { createApp, ref, computed, watch, onMounted, reactive } from 'vue';
 import { CONFIG } from './config.js';
 import { LocationRenderer } from './location-renderer.js';
 
+// Add socket.io connection initialization
+let socket = null;
+if (CONFIG.social.enabled) {
+    try {
+        socket = io({
+            autoConnect: false,
+            reconnection: true,
+            reconnectionDelay: 1000,
+            reconnectionAttempts: 5,
+        });
+    } catch (e) {
+        console.error("Socket.io initialization failed:", e);
+    }
+}
+
 // Title screen and loading screen handling
 document.addEventListener('DOMContentLoaded', () => {
     // Set game version from config
@@ -458,6 +473,15 @@ createApp({
                             }
                         }
                         
+                        // Notify other players of rare catches (if online)
+                        if (socket && isLoggedIn.value && fish.chance <= 0.3) { // Rare or better
+                            socket.emit('fish:caught', {
+                                fish: fish.name,
+                                rarity: getRarityName(fish.chance),
+                                location: currentLocation.value.name
+                            });
+                        }
+                        
                         // Force Vue to recognize the change
                         inventory.value = { ...inventory.value };
                         encyclopedia.value = { ...encyclopedia.value };
@@ -862,6 +886,158 @@ createApp({
             showOfflineModal.value = false;
         }
 
+        // Add social state
+        const playerName = ref('');
+        const isLoggedIn = ref(false);
+        const onlinePlayers = ref([]);
+        const chatMessages = ref([]);
+        const showSocialPanel = ref(false);
+        const currentChatMessage = ref('');
+        const showNameInput = ref(false);
+        const fishNotifications = ref([]);
+        const unreadMessages = ref(0);
+
+        // Social login function
+        function loginToSocial() {
+            if (!CONFIG.social.enabled || !socket) return;
+            
+            if (!playerName.value.trim()) {
+                showNameInput.value = true;
+                return;
+            }
+            
+            // Connect to socket server
+            socket.connect();
+            
+            // Setup socket event handlers once
+            if (!isLoggedIn.value) {
+                setupSocketEvents();
+            }
+            
+            socket.emit('player:login', {
+                name: playerName.value,
+                location: currentLocation.value.name,
+                level: getTotalLevel(),
+                fishDiscovered: discoveredFishCount.value
+            });
+            
+            isLoggedIn.value = true;
+            showNameInput.value = false;
+        }
+        
+        // Set player name and login
+        function setPlayerName(name) {
+            if (name.trim()) {
+                playerName.value = name;
+                loginToSocial();
+                showNameInput.value = false;
+            }
+        }
+        
+        // Get total level (sum of all upgrade levels)
+        function getTotalLevel() {
+            return upgrades.value.reduce((sum, upgrade) => sum + upgrade.level, 0);
+        }
+        
+        // Socket event setup
+        function setupSocketEvents() {
+            if (!socket) return;
+            
+            socket.on('connect', () => {
+                console.log('Connected to game server');
+                sendPlayerUpdate();
+            });
+            
+            socket.on('disconnect', () => {
+                console.log('Disconnected from game server');
+            });
+            
+            socket.on('players:update', (players) => {
+                onlinePlayers.value = players.filter(p => p.id !== socket.id);
+            });
+            
+            socket.on('chat:message', (msg) => {
+                chatMessages.value.push(msg);
+                
+                // Limit chat history
+                if (chatMessages.value.length > CONFIG.social.chatHistoryLength) {
+                    chatMessages.value = chatMessages.value.slice(
+                        chatMessages.value.length - CONFIG.social.chatHistoryLength
+                    );
+                }
+                
+                // Increment unread counter if chat is not visible
+                if (!showSocialPanel.value) {
+                    unreadMessages.value += 1;
+                }
+            });
+            
+            socket.on('fish:caught', (data) => {
+                if (CONFIG.social.fishNotifications && data.rarity !== 'Common') {
+                    // Add notification for rare catches
+                    const notification = {
+                        id: Date.now(),
+                        player: data.player,
+                        fish: data.fish,
+                        rarity: data.rarity,
+                        time: Date.now()
+                    };
+                    
+                    fishNotifications.value.push(notification);
+                    
+                    // Remove notification after 5 seconds
+                    setTimeout(() => {
+                        fishNotifications.value = fishNotifications.value.filter(n => n.id !== notification.id);
+                    }, 5000);
+                }
+            });
+        }
+        
+        // Send chat message
+        function sendChatMessage() {
+            if (!socket || !isLoggedIn.value || !currentChatMessage.value.trim()) return;
+            
+            socket.emit('chat:message', {
+                text: currentChatMessage.value,
+                player: playerName.value
+            });
+            
+            currentChatMessage.value = '';
+        }
+        
+        // Toggle social panel
+        function toggleSocialPanel() {
+            showSocialPanel.value = !showSocialPanel.value;
+            
+            // Clear unread counter when opening panel
+            if (showSocialPanel.value) {
+                unreadMessages.value = 0;
+            }
+        }
+        
+        // Update player status periodically
+        function sendPlayerUpdate() {
+            if (!socket || !isLoggedIn.value) return;
+            
+            socket.emit('player:update', {
+                location: currentLocation.value.name,
+                level: getTotalLevel(),
+                fishDiscovered: discoveredFishCount.value,
+                totalFish: totalFishCaught.value
+            });
+        }
+        
+        // Setup periodic player updates
+        function setupPlayerTracking() {
+            if (!CONFIG.social.enabled || !socket) return;
+            
+            setInterval(() => {
+                if (isLoggedIn.value) {
+                    sendPlayerUpdate();
+                }
+            }, CONFIG.social.playerTrackingInterval);
+        }
+
         // Initialize on mount
         onMounted(() => {
             // Load all canvas images
@@ -891,8 +1067,25 @@ createApp({
             
             // Initialize encyclopedia
             initializeEncyclopedia();
+            
+            // Initialize social features if enabled
+            if (CONFIG.social.enabled && socket) {
+                setupPlayerTracking();
+                
+                // Try to restore player name from localStorage
+                const savedName = localStorage.getItem('fishingTycoonPlayerName');
+                if (savedName) {
+                    playerName.value = savedName;
+                    // Auto login if name exists
+                    setTimeout(() => {
+                        loginToSocial();
+                    }, 2000); // Login after game loads
+                } else {
+                    showNameInput.value = true;
+                }
+            }
         });
-
+        
         // Load game data
         onMounted(() => {
             const savedData = localStorage.getItem('fishingTycoonSave');
@@ -997,14 +1190,24 @@ createApp({
             localStorage.setItem('fishingTycoonSave', JSON.stringify(saveData));
         }, { deep: true });
 
-        // Add window event listener to update last online time when page is about to be closed
+        // Save player name to localStorage when changed
+        watch(playerName, (newName) => {
+            if (newName.trim()) {
+                localStorage.setItem('fishingTycoonPlayerName', newName);
+            }
+        });
+        
+        // Clean up socket connection on page unload
         onMounted(() => {
             window.addEventListener('beforeunload', () => {
-                const saveData = JSON.parse(localStorage.getItem('fishingTycoonSave') || '{}');
-                saveData.lastOnlineTime = Date.now();
-                localStorage.setItem('fishingTycoonSave', JSON.stringify(saveData));
+                if (socket && socket.connected) {
+                    socket.disconnect();
+                }
             });
         });
+
+        // Make CONFIG accessible to the template
+        const config = CONFIG;
 
         return {
             money,
@@ -1049,45 +1252,20 @@ createApp({
             showOfflineModal,
             offlineEarnings,
             closeOfflineModal,
-            template: `
-                <div class="stats">
-                    <div class="stat-item">
-                        <div class="stat-label">
-                            <span class="stat-icon">💸</span>
-                            <span>Money</span>
-                        </div>
-                        <div class="stat-value">{{ formatNumber(money) }}</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">
-                            <span class="stat-icon">🎣</span>
-                            <span>Fish Caught</span>
-                        </div>
-                        <div class="stat-value">{{ totalFishCaught }}</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">
-                            <span class="stat-icon">🚣</span>
-                            <span>Boat Position</span>
-                        </div>
-                        <div class="stat-value">{{ boatPosition }}%</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">
-                            <span class="stat-icon">🎣</span>
-                            <span>Fishing Power</span>
-                        </div>
-                        <div class="stat-value">{{ fishingPower }}</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">
-                            <span class="stat-icon">⏱️</span>
-                            <span>Auto-Fishing</span>
-                        </div>
-                        <div class="stat-value">{{ autoFishingRate.toFixed(2) }}/second</div>
-                    </div>
-                </div>
-            `
+            playerName,
+            isLoggedIn,
+            onlinePlayers,
+            chatMessages,
+            showSocialPanel,
+            currentChatMessage,
+            showNameInput,
+            fishNotifications,
+            unreadMessages,
+            loginToSocial,
+            setPlayerName,
+            sendChatMessage,
+            toggleSocialPanel,
+            CONFIG: config  // Make CONFIG available to the template
         };
     }
 }).mount('#app');
