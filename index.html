@@ -1,0 +1,547 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Idle Fishing Tycoon</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script type="importmap">
+    {
+      "imports": {
+        "vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.js"
+      }
+    }
+    </script>
+</head>
+<body>
+    <!-- Title Screen -->
+    <div id="title-screen" class="title-screen active">
+        <div class="title-content">
+            <div class="game-logo">
+                <svg width="400" height="180" viewBox="0 0 400 180">
+                    <defs>
+                        <linearGradient id="titleGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stop-color="#64B5F6" />
+                            <stop offset="100%" stop-color="#1565C0" />
+                        </linearGradient>
+                        <filter id="titleShadow" x="-20%" y="-20%" width="140%" height="140%">
+                            <feDropShadow dx="2" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.3"/>
+                        </filter>
+                    </defs>
+                    <text x="200" y="90" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="36" fill="url(#titleGradient)" filter="url(#titleShadow)">Idle Fishing Tycoon</text>
+                    <path d="M 70,110 C 60,105 50,115 45,105 C 40,115 30,105 20,110" stroke="#FFF" stroke-width="2" fill="none" stroke-linecap="round" />
+                    <path d="M 330,110 C 340,105 350,115 355,105 C 360,115 370,105 380,110" stroke="#FFF" stroke-width="2" fill="none" stroke-linecap="round" />
+                    <path d="M 170,115 Q 200,140 230,115" stroke="#64B5F6" stroke-width="3" fill="none" />
+                    <path d="M 175,120 L 180,110 L 185,120" stroke="#64B5F6" stroke-width="2" fill="none" />
+                    <path d="M 215,120 L 220,110 L 225,120" stroke="#64B5F6" stroke-width="2" fill="none" />
+                </svg>
+            </div>
+            <div class="fish-animations">
+                <div class="swimming-fish" style="--delay: 0s; --duration: 15s; --y-pos: 30%">
+                    <svg width="60" height="30" viewBox="0 0 60 30">
+                        <path d="M 10,15 Q 20,3 40,15 Q 20,27 10,15 Z" fill="#64B5F6" />
+                        <circle cx="45" cy="15" r="2" fill="#0D47A1" />
+                        <path d="M 10,15 L 0,20 L 4,15 L 0,10 Z" fill="#64B5F6" />
+                    </svg>
+                </div>
+                <div class="swimming-fish" style="--delay: 2s; --duration: 18s; --y-pos: 60%">
+                    <svg width="50" height="25" viewBox="0 0 60 30">
+                        <path d="M 10,15 Q 20,3 40,15 Q 20,27 10,15 Z" fill="#29B6F6" />
+                        <circle cx="45" cy="15" r="2" fill="#0D47A1" />
+                        <path d="M 10,15 L 0,20 L 4,15 L 0,10 Z" fill="#29B6F6" />
+                    </svg>
+                </div>
+                <div class="swimming-fish" style="--delay: 4s; --duration: 20s; --y-pos: 75%">
+                    <svg width="70" height="35" viewBox="0 0 60 30">
+                        <path d="M 10,15 Q 20,3 40,15 Q 20,27 10,15 Z" fill="#0288D1" />
+                        <circle cx="45" cy="15" r="2" fill="#0D47A1" />
+                        <path d="M 10,15 L 0,20 L 4,15 L 0,10 Z" fill="#0288D1" />
+                    </svg>
+                </div>
+                <div class="swimming-fish" style="--delay: 6s; --duration: 16s; --y-pos: 45%">
+                    <svg width="65" height="32" viewBox="0 0 60 30">
+                        <path d="M 10,15 Q 20,3 40,15 Q 20,27 10,15 Z" fill="#039BE5" />
+                        <circle cx="45" cy="15" r="2" fill="#0D47A1" />
+                        <path d="M 10,15 L 0,20 L 4,15 L 0,10 Z" fill="#039BE5" />
+                    </svg>
+                </div>
+                <div class="swimming-fish" style="--delay: 8s; --duration: 22s; --y-pos: 15%">
+                    <svg width="45" height="22" viewBox="0 0 60 30">
+                        <path d="M 10,15 Q 20,3 40,15 Q 20,27 10,15 Z" fill="#4FC3F7" />
+                        <circle cx="45" cy="15" r="2" fill="#0D47A1" />
+                        <path d="M 10,15 L 0,20 L 4,15 L 0,10 Z" fill="#4FC3F7" />
+                    </svg>
+                </div>
+                <div class="title-seagrass" style="left: 5%; height: 120px; width: 14px; animation-delay: 0.5s;"></div>
+                <div class="title-seagrass" style="left: 10%; height: 80px; width: 10px; animation-delay: 1.2s;"></div>
+                <div class="title-seagrass" style="left: 18%; height: 140px; width: 16px; animation-delay: 0.8s;"></div>
+                <div class="title-seagrass" style="left: 25%; height: 90px; width: 12px; animation-delay: 1.5s;"></div>
+                <div class="title-seagrass" style="left: 40%; height: 110px; width: 14px; animation-delay: 0.3s;"></div>
+                <div class="title-seagrass" style="left: 60%; height: 130px; width: 16px; animation-delay: 0.9s;"></div>
+                <div class="title-seagrass" style="left: 75%; height: 100px; width: 12px; animation-delay: 1.2s;"></div>
+                <div class="title-seagrass" style="left: 85%; height: 120px; width: 14px; animation-delay: 0.7s;"></div>
+                <div class="title-seagrass" style="left: 95%; height: 90px; width: 10px; animation-delay: 1.0s;"></div>
+            </div>
+            <div class="title-bubbles">
+                <div class="bubble" style="left: 10%; width: 20px; height: 20px; --duration: 8s; --opacity: 0.6; --rotate: 10deg;"></div>
+                <div class="bubble" style="left: 25%; width: 15px; height: 15px; --duration: 9s; --opacity: 0.5; --rotate: -15deg;"></div>
+                <div class="bubble" style="left: 40%; width: 25px; height: 25px; --duration: 12s; --opacity: 0.7; --rotate: 20deg;"></div>
+                <div class="bubble" style="left: 60%; width: 18px; height: 18px; --duration: 10s; --opacity: 0.6; --rotate: -10deg;"></div>
+                <div class="bubble" style="left: 75%; width: 22px; height: 22px; --duration: 11s; --opacity: 0.5; --rotate: 15deg;"></div>
+                <div class="bubble" style="left: 85%; width: 16px; height: 16px; --duration: 7s; --opacity: 0.7; --rotate: -20deg;"></div>
+            </div>
+            <div class="start-button-container">
+                <button id="start-game" class="start-button">Start Fishing</button>
+                <div class="button-ripple"></div>
+            </div>
+            <div class="game-version">v1.0.0</div>
+        </div>
+    </div>
+
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-content">
+            <div class="loading-boat">
+                <svg width="100" height="50" viewBox="0 0 100 50">
+                    <path d="M 20,30 Q 50,10 80,30 L 75,40 L 25,40 Z" fill="#8B5A2B" />
+                    <rect x="45" y="10" width="5" height="20" fill="#6B4226" />
+                    <path d="M 45,10 L 60,5 L 60,30 Z" fill="#FFF" />
+                </svg>
+            </div>
+            <div class="loading-text">Loading your fishing adventure...</div>
+            <div class="loading-bar-container">
+                <div class="loading-bar"></div>
+            </div>
+            <div class="loading-tips">
+                <p id="loading-tip">Tip: Higher quality fishing rods catch more fish per cast!</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="app" class="hidden-app">
+        <!-- Offline Progress Modal -->
+        <div class="modal-overlay" v-if="showOfflineModal">
+            <div class="modal-content offline-modal">
+                <div class="modal-header">
+                    <h2>Welcome Back!</h2>
+                    <button class="modal-close" @click="closeOfflineModal">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="offline-content">
+                        <div class="offline-icon">
+                            <i class="material-icons">update</i>
+                        </div>
+                        <h3>While you were away ({{ offlineEarnings.timeAway }}):</h3>
+                        <div class="offline-stats">
+                            <div class="offline-stat">
+                                <i class="material-icons">catching_pokemon</i>
+                                <span>{{ formatNumber(offlineEarnings.fishCaught) }} fish caught</span>
+                            </div>
+                            <div class="offline-stat">
+                                <i class="material-icons">attach_money</i>
+                                <span>${{ formatNumber(offlineEarnings.money) }} earned</span>
+                            </div>
+                        </div>
+                        <div class="offline-message">
+                            <p>Your auto-fishers have been working hard while you were away!</p>
+                        </div>
+                        <button class="collect-button" @click="closeOfflineModal">
+                            Collect and Continue
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <header>
+            <h1>Idle Fishing Tycoon</h1>
+            <div class="currency">
+                <span class="currency-icon">💰</span>
+                <span>${{ formatNumber(money) }}</span>
+            </div>
+        </header>
+        
+        <main>
+            <!-- Tab navigation -->
+            <div class="tab-container">
+                <div class="tab" :class="{ active: activeTab === 'locations' }" @click="changeTab('locations')">
+                    <i class="material-icons">location_on</i> Locations
+                </div>
+                <div class="tab" :class="{ active: activeTab === 'boat' }" @click="toggleBoatCustomization">
+                    <i class="material-icons">directions_boat</i> Boat Shop
+                </div>
+                <div class="tab" :class="{ active: activeTab === 'encyclopedia' }" @click="toggleEncyclopedia" :style="{ opacity: encyclopediaUnlocked ? 1 : 0.5 }">
+                    <i class="material-icons">menu_book</i> Fish Encyclopedia
+                    <span v-if="encyclopediaUnlocked">({{ discoveredFishCount }}/{{ totalFishCount }})</span>
+                </div>
+                <div class="tab" :class="{ active: activeTab === 'upgrades' }" @click="changeTab('upgrades')">
+                    <i class="material-icons">upgrade</i> Upgrades
+                </div>
+            </div>
+            
+            <!-- Fishing locations selector -->
+            <div class="fishing-spot-selector" v-if="activeTab === 'locations'">
+                <div 
+                    v-for="location in fishingLocations" 
+                    :key="location.id" 
+                    class="location-card" 
+                    :class="{ 'active': activeLocationId === location.id, 'locked': !location.unlocked }"
+                    @click="location.unlocked ? changeLocation(location.id) : unlockLocation(location.id)"
+                >
+                    <div class="location-image" :style="{ background: location.canvasImage ? `url(${location.canvasImage}) center/cover` : location.background }">
+                        <div class="location-price" v-if="!location.unlocked">${{ formatNumber(location.price) }}</div>
+                    </div>
+                    <div class="location-name">{{ location.name }}</div>
+                    <div class="location-details">{{ location.description }}</div>
+                </div>
+            </div>
+            
+            <div class="game-container">
+                <div class="fishing-area">
+                    <div class="water">
+                        <div class="waves"></div>
+                        <div v-if="autoFishingActive" class="auto-fishing-indicator">
+                            <div class="blink"></div>
+                            <span>Auto-Fishing Active</span>
+                        </div>
+                        <div class="boat" :style="{ left: `${boatPosition}%` }">
+                            <svg width="140" height="70" viewBox="0 0 140 70">
+                                <defs>
+                                    <linearGradient id="boatGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                        <stop offset="0%" stop-color="#A5744E" />
+                                        <stop offset="60%" stop-color="#8B5A2B" />
+                                        <stop offset="100%" stop-color="#6B4226" />
+                                    </linearGradient>
+                                    <linearGradient id="sailGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                        <stop offset="0%" stop-color="#FFFFFF" />
+                                        <stop offset="60%" stop-color="#F5F5F5" />
+                                        <stop offset="100%" stop-color="#E0E0E0" />
+                                    </linearGradient>
+                                    <filter id="dropShadow" x="-20%" y="-20%" width="140%" height="140%">
+                                        <feDropShadow dx="2" dy="2" stdDeviation="2" flood-color="#000" flood-opacity="0.3"/>
+                                    </filter>
+                                    <filter id="woodTexture">
+                                        <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" result="noise"/>
+                                        <feDisplacementMap in="SourceGraphic" in2="noise" scale="5" xChannelSelector="R" yChannelSelector="G"/>
+                                    </filter>
+                                </defs>
+                                <!-- Boat hull -->
+                                <path d="M 20,40 Q 70,10 120,40 L 110,55 L 30,55 Z" fill="url(#boatGradient)" filter="url(#dropShadow)" />
+                                <!-- Mast -->
+                                <rect x="65" y="15" width="10" height="25" fill="#8B5A2B" />
+                                <!-- Cabin -->
+                                <rect x="85" y="42" width="20" height="10" rx="2" ry="2" fill="#8D6E63" />
+                                <rect x="90" y="38" width="10" height="4" fill="#A1887F" />
+                                <rect x="89" y="38" width="12" height="2" fill="#BBBBBB" rx="1" ry="1" /> <!-- Window frame -->
+                                <rect x="90" y="39" width="10" height="1" fill="#B3E5FC" /> <!-- Window glass -->
+                                <!-- Mast top -->
+                                <circle cx="70" cy="12" r="7" fill="#8B4513" />
+                                <!-- Sail with texture -->
+                                <path d="M 70,12 L 95,2 L 95,35 L 70,12 Z" fill="url(#sailGradient)" stroke="#DDDDDD" stroke-width="1">
+                                    <animate attributeName="d" values="M 70,12 L 95,2 L 95,35 L 70,12 Z; M 70,12 L 97,4 L 95,36 L 70,12 Z; M 70,12 L 95,2 L 95,35 L 70,12 Z" dur="8s" repeatCount="indefinite" />
+                                </path>
+                                <!-- Sail highlights -->
+                                <path d="M 75,14 L 92,9 L 92,30 L 75,14 Z" fill="rgba(255,255,255,0.2)" />
+                                <!-- Deck details -->
+                                <rect x="25" y="42" width="90" height="2" fill="#5D4037" />
+                                <rect x="40" y="40" width="60" height="4" fill="#795548" rx="1" ry="1" />
+                                <!-- Fishing chair -->
+                                <circle cx="40" cy="45" r="3" fill="#5D4037" />
+                                <rect x="37" y="43" width="6" height="2" fill="#795548" />
+                                <!-- Bow decorations -->
+                                <path d="M25,45 L30,40 L35,45" stroke="#8D6E63" stroke-width="1.5" fill="none" />
+                                <!-- Hull details -->
+                                <path d="M 30,48 L 108,48" stroke="#6B4226" stroke-width="0.5" stroke-dasharray="5,2" />
+                                <path d="M 35,44 L 105,44" stroke="#6B4226" stroke-width="0.5" stroke-dasharray="3,2" />
+                            </svg>
+                            <div class="fishing-line" v-if="isFishing" :style="{ height: `${lineLength}px` }"></div>
+                            <div v-if="showSplash" class="fishing-splash" :style="{ left: '50%', top: `${lineLength}px` }"></div>
+                        </div>
+                        
+                        <!-- Seaweed decorations with more detail -->
+                        <div class="seaweed" style="left: 10%; height: 90px; width: 12px; animation-delay: 0.5s;"></div>
+                        <div class="seaweed" style="left: 15%; height: 65px; width: 8px; animation-delay: 1.2s;"></div>
+                        <div class="seaweed" style="left: 25%; height: 110px; width: 15px; animation-delay: 0.8s;"></div>
+                        <div class="seaweed" style="left: 35%; height: 75px; width: 10px; animation-delay: 1.5s;"></div>
+                        <div class="seaweed" style="left: 50%; height: 60px; width: 12px; animation-delay: 0.3s;"></div>
+                        <div class="seaweed" style="left: 65%; height: 85px; width: 14px; animation-delay: 0.9s;"></div>
+                        <div class="seaweed" style="left: 75%; height: 100px; width: 13px; animation-delay: 1.2s;"></div>
+                        <div class="seaweed" style="left: 85%; height: 70px; width: 9px; animation-delay: 0.7s;"></div>
+                        
+                        <!-- Fish in water with enhanced SVG -->
+                        <template v-for="fish in fishInWater" :key="fish.id">
+                            <div class="fish" :style="{ left: `${fish.position}%`, top: `${fish.depth}%`, transform: `scaleX(${fish.direction})` }">
+                                <svg width="40" height="20" viewBox="0 0 40 20">
+                                    <defs>
+                                        <radialGradient :id="'fishGradient'+fish.id" cx="70%" cy="50%" r="50%" fx="70%" fy="50%">
+                                            <stop offset="0%" :stop-color="fish.color" />
+                                            <stop offset="80%" :stop-color="fish.color" />
+                                            <stop offset="100%" :stop-color="'#000'" stop-opacity="0.6" />
+                                        </radialGradient>
+                                        <filter id="fishShadow">
+                                            <feGaussianBlur in="SourceAlpha" stdDeviation="1" />
+                                        </filter>
+                                    </defs>
+                                    <!-- Fish body with gradient -->
+                                    <path d="M 8,10 Q 15,2 28,10 Q 15,18 8,10 Z" :fill="`url(#fishGradient${fish.id})`" />
+                                    <!-- Fish eye -->
+                                    <circle cx="30" cy="10" r="2" fill="black" />
+                                    <circle cx="30.5" cy="9.5" r="0.5" fill="white" />
+                                    <!-- Fish tail -->
+                                    <path d="M 8,10 L 0,14 L 3,10 L 0,6 Z" :fill="fish.color" />
+                                    <!-- Fish dorsal fin -->
+                                    <path d="M 18,10 L 24,4 L 22,10 Z" :fill="fish.color" opacity="0.7" />
+                                    <!-- Fish bottom fin -->
+                                    <path d="M 20,10 L 24,16 L 18,14 Z" :fill="fish.color" opacity="0.6" />
+                                    <!-- Gills -->
+                                    <path d="M 26,8 Q 24,10 26,12" stroke="#333" stroke-width="0.5" fill="none" />
+                                    <!-- subtle scales -->
+                                    <path d="M 16,8 Q 18,7 20,8 M 16,12 Q 18,13 20,12" stroke="#333" stroke-width="0.3" stroke-opacity="0.3" fill="none" />
+                                </svg>
+                            </div>
+                        </template>
+                    </div>
+                    
+                    <div class="controls">
+                        <button @click="startFishing" :disabled="isFishing">
+                            {{ isFishing ? 'Fishing...' : 'Cast Line' }}
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="info-panel">
+                    <div class="stats">
+                        <h2>Fishing Stats</h2>
+                        <div class="stat-item">
+                            <div class="stat-label">
+                                <span class="stat-icon">🎣</span>
+                                <span>Total Fish Caught</span>
+                            </div>
+                            <div class="stat-value">{{ formatNumber(totalFishCaught) }}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">
+                                <span class="stat-icon">🔌</span>
+                                <span>Fishing Power</span>
+                            </div>
+                            <div class="stat-value">{{ fishingPower }} fish/cast</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">
+                                <span class="stat-icon">⏱️</span>
+                                <span>Auto-Fishing</span>
+                            </div>
+                            <div class="stat-value">{{ autoFishingRate }}/second</div>
+                        </div>
+                    </div>
+                    
+                    <div class="inventory">
+                        <h2>Fish Inventory</h2>
+                        <div v-for="(count, type) in inventory" :key="type" class="inventory-item">
+                            <div class="fish-info">
+                                <div class="fish-icon">
+                                    <svg width="30" height="15" viewBox="0 0 30 15">
+                                        <path d="M 5,7.5 Q 10,0 20,7.5 Q 10,15 5,7.5 Z" :fill="getFishColor(type)" />
+                                        <circle cx="22" cy="7.5" r="1.5" fill="black" />
+                                        <path d="M 5,7.5 L 0,10 L 3,7.5 L 0,5 Z" :fill="getFishColor(type)" />
+                                    </svg>
+                                </div>
+                                <span>{{ type }}: <strong>{{ count }}</strong></span>
+                            </div>
+                            <button @click="sellFish(type)">Sell All</button>
+                        </div>
+                        <div v-if="Object.keys(inventory).length === 0" class="inventory-empty">
+                            <p>No fish caught yet. Start fishing!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Boat Customization Modal -->
+            <div class="modal-overlay" v-if="showBoatCustomization" @click.self="closeModal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>Boat Customization</h2>
+                        <button class="modal-close" @click="closeModal">×</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="boat-parts">
+                            <div v-for="(part, partType) in boatCustomization" :key="partType" class="boat-part">
+                                <h3>{{ part.name }}</h3>
+                                <div class="part-preview">
+                                    <!-- SVG representation of the part based on current selection -->
+                                    <svg width="100" height="60" viewBox="0 0 100 60">
+                                        <rect x="10" y="20" width="80" height="30" rx="5" :fill="partType === 'hull' ? (part.current === 'basic' ? '#8B5A2B' : part.current === 'reinforced' ? '#A0522D' : '#8B4513') : '#8B5A2B'" />
+                                        
+                                        <!-- Engine representation -->
+                                        <rect v-if="partType === 'engine'" x="75" y="25" width="15" height="20" rx="2" :fill="part.current === 'basic' ? '#555' : part.current === 'improved' ? '#777' : '#999'" />
+                                        
+                                        <!-- Equipment representation -->
+                                        <circle v-if="partType === 'equipment'" cx="40" cy="20" r="5" :fill="part.current === 'basic' ? '#777' : part.current === 'sonar' ? '#4CAF50' : '#2196F3'" />
+                                        
+                                        <!-- Storage representation -->
+                                        <rect v-if="partType === 'storage'" x="20" y="25" width="30" height="20" rx="2" :fill="part.current === 'basic' ? '#9E9E9E' : part.current === 'medium' ? '#78909C' : '#546E7A'" />
+                                    </svg>
+                                </div>
+                                <div class="part-options">
+                                    <div 
+                                        v-for="option in part.options" 
+                                        :key="option.id" 
+                                        class="part-option" 
+                                        :class="{
+                                            'active': part.current === option.id,
+                                            'locked': !option.unlocked
+                                        }"
+                                        @click="option.unlocked ? upgradeBoatPart(partType, option.id) : money >= option.price ? upgradeBoatPart(partType, option.id) : null"
+                                    >
+                                        {{ option.name }}
+                                        <div v-if="!option.unlocked">
+                                            ${{ formatNumber(option.price) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Encyclopedia Modal -->
+            <div class="modal-overlay" v-if="showEncyclopedia" @click.self="closeModal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>Fish Encyclopedia</h2>
+                        <button class="modal-close" @click="closeModal">×</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="progress-container">
+                            <div>Completion: {{ discoveryPercentage }}%</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" :style="{ width: `${discoveryPercentage}%` }"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="encyclopedia-content">
+                            <div 
+                                v-for="fish in encyclopedia" 
+                                :key="fish.id" 
+                                class="fish-card" 
+                                :class="{ 'locked': !fish.discovered }"
+                                @click="fish.discovered ? showFishDetails(fish.id) : null"
+                            >
+                                <div class="fish-card-locked-overlay" v-if="!fish.discovered">
+                                    <i class="material-icons">lock</i>
+                                </div>
+                                <div class="fish-image">
+                                    <svg v-if="fish.discovered" width="60" height="30" viewBox="0 0 60 30">
+                                        <path d="M 10,15 Q 20,3 40,15 Q 20,27 10,15 Z" :fill="fish.color" />
+                                        <circle cx="45" cy="15" r="2" fill="black" />
+                                        <circle cx="45.5" cy="14.5" r="0.5" fill="white" />
+                                        <path d="M 10,15 L 0,20 L 4,15 L 0,10 Z" :fill="fish.color" />
+                                        <path d="M 30,15 L 38,7 L 34,15 Z" :fill="fish.color" opacity="0.7" />
+                                        <path d="M 30,15 L 38,23 L 28,19 Z" :fill="fish.color" opacity="0.6" />
+                                    </svg>
+                                    <svg v-else width="60" height="30" viewBox="0 0 60 30">
+                                        <path d="M 10,15 Q 20,3 40,15 Q 20,27 10,15 Z" fill="#CCCCCC" />
+                                        <circle cx="45" cy="15" r="2" fill="#999999" />
+                                        <path d="M 10,15 L 0,20 L 4,15 L 0,10 Z" fill="#CCCCCC" />
+                                        <text x="30" y="20" text-anchor="middle" fill="#777" font-size="10">?</text>
+                                    </svg>
+                                </div>
+                                <div class="fish-details">
+                                    <div class="fish-name">{{ fish.discovered ? fish.name : '???' }}</div>
+                                    <div class="fish-rarity">{{ fish.discovered ? fish.rarity : '???' }}</div>
+                                    <div class="fish-stats" v-if="fish.discovered">
+                                        <div><i class="material-icons">attach_money</i> {{ fish.value }}</div>
+                                        <div><i class="material-icons">catching_pokemon</i> {{ fish.caught }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Fish detail view -->
+                        <div class="modal-overlay" v-if="selectedFish" @click.self="selectedFish = null">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h2>{{ selectedFish.name }}</h2>
+                                    <button class="modal-close" @click="selectedFish = null">×</button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="fish-detail-container">
+                                        <div class="fish-detail-image">
+                                            <svg width="120" height="60" viewBox="0 0 60 30">
+                                                <path d="M 10,15 Q 20,3 40,15 Q 20,27 10,15 Z" :fill="selectedFish.color" />
+                                                <circle cx="45" cy="15" r="2" fill="black" />
+                                                <circle cx="45.5" cy="14.5" r="0.5" fill="white" />
+                                                <path d="M 10,15 L 0,20 L 4,15 L 0,10 Z" :fill="selectedFish.color" />
+                                                <path d="M 30,15 L 38,7 L 34,15 Z" :fill="selectedFish.color" opacity="0.7" />
+                                                <path d="M 30,15 L 38,23 L 28,19 Z" :fill="selectedFish.color" opacity="0.6" />
+                                            </svg>
+                                        </div>
+                                        <div class="fish-detail-info">
+                                            <h3>{{ selectedFish.name }}</h3>
+                                            <div>Rarity: <strong>{{ selectedFish.rarity }}</strong></div>
+                                            <div>Location: <strong>{{ selectedFish.location }}</strong></div>
+                                            <div>Value: <strong>${{ selectedFish.value }}</strong></div>
+                                            
+                                            <div class="fish-detail-stats">
+                                                <div class="stat-row">
+                                                    <div>Total Caught:</div>
+                                                    <div>{{ selectedFish.caught }}</div>
+                                                </div>
+                                                <div class="stat-row">
+                                                    <div>Record Weight:</div>
+                                                    <div>{{ selectedFish.record.weight }}kg</div>
+                                                </div>
+                                                <div class="stat-row">
+                                                    <div>Record Length:</div>
+                                                    <div>{{ selectedFish.record.length }}m</div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="catch-history">
+                                                <p>First discovered at location: {{ selectedFish.location }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div v-if="activeTab === 'upgrades'" class="upgrades">
+                <h2>Upgrades</h2>
+                <div class="upgrade-list">
+                    <div v-for="upgrade in upgrades" :key="upgrade.id" class="upgrade-item">
+                        <div class="upgrade-info">
+                            <h3>{{ upgrade.name }}</h3>
+                            <p>{{ upgrade.description }}</p>
+                            <div class="upgrade-level">
+                                <span>Level {{ upgrade.level }}</span>
+                                <div class="level-bar">
+                                    <div class="level-progress" :style="{width: `${upgrade.maxLevel ? (upgrade.level / upgrade.maxLevel) * 100 : (upgrade.level <= 10 ? upgrade.level * 10 : 100)}%`}"></div>
+                                </div>
+                                <span>{{ upgrade.maxLevel || '∞' }}</span>
+                            </div>
+                            <p><strong>Cost: ${{ formatNumber(upgrade.cost) }}</strong></p>
+                        </div>
+                        <button @click="purchaseUpgrade(upgrade.id)" :disabled="money < upgrade.cost || (upgrade.maxLevel && upgrade.level >= upgrade.maxLevel)">
+                            {{ money < upgrade.cost ? 'Need more money' : (upgrade.maxLevel && upgrade.level >= upgrade.maxLevel) ? 'Maxed Out' : 'Upgrade' }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>Idle Fishing Tycoon - Reel in riches and build your fishing empire!</p>
+            <button class="reset-button" @click="resetProgress">Reset Progress</button>
+        </footer>
+    </div>
+    
+    <script type="module" src="app.js"></script>
+</body>
+</html>
